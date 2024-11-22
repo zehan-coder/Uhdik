@@ -267,4 +267,29 @@
             event.stopPropagation(); // Prevent interaction from triggering intro screen hiding
             if (video.muted) {
                 video.muted = false;
-                volumeIcon.classList.remove
+                volumeIcon.classList.remove('fa-volume-mute');
+                volumeIcon.classList.add('fa-volume-up');
+            } else {
+                video.muted = true;
+                volumeIcon.classList.remove('fa-volume-up');
+                volumeIcon.classList.add('fa-volume-mute');
+            }
+        });
+
+        // Copy Discord Tag
+        function copyDiscordTag() {
+            const discordTag = "cure0001";
+            navigator.clipboard.writeText(discordTag).then(() => {
+                // Show "Copied" animation
+                copiedMessage.classList.add('show');
+                setTimeout(() => {
+                    copiedMessage.classList.remove('show');
+                }, 2000);
+            }).catch((error) => {
+                alert("Failed to copy Discord tag");
+                console.error("Copy failed:", error);
+            });
+        }
+    </script>
+</body>
+</html>
