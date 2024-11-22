@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cure</title>
+    <title>Profile Card with Click to Start Video</title>
     <style>
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
 
@@ -59,6 +58,7 @@
             height: 100%;
             object-fit: cover;
             z-index: -1;
+            display: block; /* To ensure video remains invisible at the start */
         }
 
         /* Profile Card */
@@ -208,9 +208,9 @@
     </div>
 
     <!-- Video Background -->
-    <video id="video-bg" class="video-bg" autoplay loop muted playsinline>
-        <source src="vedio.mp4" type="video/mp4">
-        <source src="your-video-file.webm" type="video/webm">
+    <video class="video-bg" id="video-bg" autoplay loop muted playsinline>
+        <source src="/videos/video.mp4" type="video/mp4">
+        <source src="/videos/your-video.webm" type="video/webm">
         Your browser does not support the video tag.
     </video>
 
@@ -249,13 +249,14 @@
 
         // Start muted for autoplay
         video.muted = true;
+        video.pause(); // Pause the video by default
 
         // Remove intro screen and unmute video on interaction
         window.addEventListener('click', () => {
             if (introScreen.style.display !== 'none') {
                 introScreen.style.display = 'none'; // Hide intro screen
                 video.muted = false; // Unmute video
-                video.play(); // Ensure video starts playing
+                video.play(); // Start the video
                 volumeIcon.classList.remove('fa-volume-mute');
                 volumeIcon.classList.add('fa-volume-up');
             }
@@ -266,29 +267,4 @@
             event.stopPropagation(); // Prevent interaction from triggering intro screen hiding
             if (video.muted) {
                 video.muted = false;
-                volumeIcon.classList.remove('fa-volume-mute');
-                volumeIcon.classList.add('fa-volume-up');
-            } else {
-                video.muted = true;
-                volumeIcon.classList.remove('fa-volume-up');
-                volumeIcon.classList.add('fa-volume-mute');
-            }
-        });
-
-        // Copy Discord // Copy Discord Tag
-        function copyDiscordTag() {
-            const discordTag = "cure0001";
-            navigator.clipboard.writeText(discordTag).then(() => {
-                // Show "Copied" animation
-                copiedMessage.classList.add('show');
-                setTimeout(() => {
-                    copiedMessage.classList.remove('show');
-                }, 2000);
-            }).catch((error) => {
-                alert("Failed to copy Discord tag");
-                console.error("Copy failed:", error);
-            });
-        }
-    </script>
-</body>
-</html>
+                volumeIcon.classList.remove
