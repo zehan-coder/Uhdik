@@ -120,6 +120,30 @@
             color: black;
         }
 
+        /* Mute/Unmute Button */
+        .volume-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: black;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
+            z-index: 2;
+            font-size: 20px;
+        }
+
+        .volume-button i {
+            pointer-events: none; /* Prevent click events on the icon itself */
+        }
+
         /* Copied Animation */
         .copied-message {
             position: absolute;
@@ -155,6 +179,11 @@
         Your browser does not support the video tag.
     </video>
 
+    <!-- Mute/Unmute Button -->
+    <button class="volume-button" id="volume-button">
+        <i class="fas fa-volume-mute"></i>
+    </button>
+
     <!-- Profile Card -->
     <div class="profile-card">
         <img id="profile-photo" src="IMG_1215.png" alt="Profile Picture">
@@ -163,7 +192,7 @@
             <a href="https://www.instagram.com/corvette2turnt" target="_blank" title="Instagram">
                 <i class="fab fa-instagram"></i>
             </a>
-            <a href="#" onclick="copyDiscordTag()" title="Discord">
+            <a href="javascript:void(0)" onclick="copyDiscordTag()" title="Discord">
                 <i class="fab fa-discord"></i>
             </a>
         </div>
@@ -175,6 +204,8 @@
     <script>
         const introScreen = document.getElementById('intro-screen');
         const video = document.getElementById('video-bg');
+        const volumeButton = document.getElementById('volume-button');
+        const volumeIcon = volumeButton.querySelector('i');
         const copiedMessage = document.getElementById('copied-message');
 
         // Hide intro screen and play video on click
@@ -183,6 +214,22 @@
                 introScreen.style.display = 'none';
                 video.muted = false;
                 video.play();
+                volumeIcon.classList.remove('fa-volume-mute');
+                volumeIcon.classList.add('fa-volume-up');
+            }
+        });
+
+        // Toggle mute/unmute
+        volumeButton.addEventListener('click', (event) => {
+            event.stopPropagation(); // Prevent click from triggering intro screen hiding
+            if (video.muted) {
+                video.muted = false;
+                volumeIcon.classList.remove('fa-volume-mute');
+                volumeIcon.classList.add('fa-volume-up');
+            } else {
+                video.muted = true;
+                volumeIcon.classList.remove('fa-volume-up');
+                volumeIcon.classList.add('fa-volume-mute');
             }
         });
 
