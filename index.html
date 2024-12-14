@@ -141,15 +141,6 @@
             opacity: 1;
             transform: translate(-50%, -120px);
         }
-
-        label[for="upload-photo"] {
-            color: white;
-            cursor: pointer;
-            text-decoration: underline;
-            margin-top: 10px;
-            display: block;
-            font-size: 14px;
-        }
     </style>
 </head>
 <body>
@@ -160,7 +151,7 @@
 
     <!-- Video Background -->
     <video class="video-bg" id="video-bg" autoplay loop muted playsinline>
-        <source src="your-video.mp4" type="video/mp4">
+        <source src="idkbro.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
 
@@ -168,8 +159,6 @@
     <div class="profile-card">
         <img id="profile-photo" src="IMG_1215.png" alt="Profile Picture">
         <h1>cure</h1>
-        <input type="file" id="upload-photo" accept="image/*" style="display: none;">
-        <label for="upload-photo">Upload Profile Photo</label>
         <div class="button-container icons">
             <a href="https://www.instagram.com/corvette2turnt" target="_blank" title="Instagram">
                 <i class="fab fa-instagram"></i>
@@ -186,8 +175,6 @@
     <script>
         const introScreen = document.getElementById('intro-screen');
         const video = document.getElementById('video-bg');
-        const profilePhoto = document.getElementById('profile-photo');
-        const uploadPhotoInput = document.getElementById('upload-photo');
         const copiedMessage = document.getElementById('copied-message');
 
         // Hide intro screen and play video on click
@@ -196,18 +183,6 @@
                 introScreen.style.display = 'none';
                 video.muted = false;
                 video.play();
-            }
-        });
-
-        // Handle Profile Photo Upload
-        uploadPhotoInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    profilePhoto.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
             }
         });
 
