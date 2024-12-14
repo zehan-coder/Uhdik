@@ -13,7 +13,7 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden;
+            overflow: hidden; /* Prevent scrolling */
         }
 
         body {
@@ -214,6 +214,15 @@
         const volumeIcon = volumeButton.querySelector('i');
         const copiedMessage = document.getElementById('copied-message');
 
+        // Prevent scrolling globally
+        function preventScrolling() {
+            document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden';
+        }
+
+        // Apply prevent scrolling immediately
+        preventScrolling();
+
         // Hide intro screen and play video on click
         window.addEventListener('click', () => {
             if (introScreen.style.display !== 'none') {
@@ -222,6 +231,7 @@
                 video.play();
                 volumeIcon.classList.remove('fa-volume-mute');
                 volumeIcon.classList.add('fa-volume-up');
+                preventScrolling(); // Ensure scrolling is disabled
             }
         });
 
