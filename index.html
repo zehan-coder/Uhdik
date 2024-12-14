@@ -13,7 +13,9 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden; /* Prevent scrolling */
+            overflow: hidden; /* Prevent scrollbars */
+            touch-action: none; /* Prevent touch gestures */
+            overscroll-behavior: none; /* Prevent bounce effects */
         }
 
         body {
@@ -176,7 +178,7 @@
 <body>
     <!-- Black Screen Intro -->
     <div class="intro-screen" id="intro-screen">
-        <div class="intro-text">Click Anywhere to Continue</div>
+        <div class="intro-text">Tap Anywhere to Continue</div>
     </div>
 
     <!-- Video Background -->
@@ -214,26 +216,30 @@
         const volumeIcon = volumeButton.querySelector('i');
         const copiedMessage = document.getElementById('copied-message');
 
-        // Prevent scrolling globally
+        // Prevent scrolling
         function preventScrolling() {
             document.body.style.overflow = 'hidden';
             document.documentElement.style.overflow = 'hidden';
         }
 
-        // Apply prevent scrolling immediately
-        preventScrolling();
+        // Disable touch scrolling
+        document.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
 
-        // Hide intro screen and play video on click
-        window.addEventListener('click', () => {
+        // Hide intro screen and play video on touch or click
+        const removeIntro = () => {
             if (introScreen.style.display !== 'none') {
                 introScreen.style.display = 'none';
                 video.muted = false;
-                video.play();
+                video.play().catch(() => console.log('Video autoplay not allowed.'));
                 volumeIcon.classList.remove('fa-volume-mute');
                 volumeIcon.classList.add('fa-volume-up');
                 preventScrolling(); // Ensure scrolling is disabled
             }
-        });
+        };
+
+        // Add event listeners for both touchstart and click
+        introScreen.addEventListener('click', removeIntro);
+        introScreen.addEventListener('touchstart', removeIntro);
 
         // Toggle mute/unmute
         volumeButton.addEventListener('click', (event) => {
