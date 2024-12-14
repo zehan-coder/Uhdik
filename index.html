@@ -182,7 +182,7 @@
     </div>
 
     <!-- Video Background -->
-    <video class="video-bg" id="video-bg" autoplay loop muted playsinline>
+    <video class="video-bg" id="video-bg" muted playsinline loop>
         <source src="idkbro.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
@@ -216,24 +216,19 @@
         const volumeIcon = volumeButton.querySelector('i');
         const copiedMessage = document.getElementById('copied-message');
 
-        // Prevent scrolling
-        function preventScrolling() {
-            document.body.style.overflow = 'hidden';
-            document.documentElement.style.overflow = 'hidden';
-        }
-
-        // Disable touch scrolling
-        document.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+        // Play video only after user interaction
+        const playVideo = () => {
+            video.muted = false; // Unmute video
+            video.play().catch((err) => {
+                console.log('Autoplay error: ', err);
+            });
+        };
 
         // Hide intro screen and play video on touch or click
         const removeIntro = () => {
             if (introScreen.style.display !== 'none') {
                 introScreen.style.display = 'none';
-                video.muted = false;
-                video.play().catch(() => console.log('Video autoplay not allowed.'));
-                volumeIcon.classList.remove('fa-volume-mute');
-                volumeIcon.classList.add('fa-volume-up');
-                preventScrolling(); // Ensure scrolling is disabled
+                playVideo();
             }
         };
 
