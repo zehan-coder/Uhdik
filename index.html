@@ -36,7 +36,7 @@
             justify-content: center;
             align-items: center;
             z-index: 10;
-            cursor: pointer; /* Important for iOS - shows it's interactive */
+            cursor: pointer;
         }
 
         .intro-text {
@@ -148,7 +148,7 @@
         }
 
         .volume-button i {
-            pointer-events: none; /* Prevent click events on the icon itself */
+            pointer-events: none;
         }
 
         /* Copied Animation */
@@ -181,14 +181,14 @@
     </div>
 
     <!-- Video Background (no autoplay) -->
-    <video class="video-bg" id="video-bg" loop muted playsinline webkit-playsinline>
+    <video class="video-bg" id="video-bg" loop playsinline webkit-playsinline>
         <source src="idkbro.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
 
     <!-- Mute/Unmute Button -->
     <button class="volume-button" id="volume-button">
-        <i class="fas fa-volume-mute"></i>
+        <i class="fas fa-volume-up"></i>
     </button>
 
     <!-- Profile Card -->
@@ -215,29 +215,38 @@
         const volumeIcon = volumeButton.querySelector('i');
         const copiedMessage = document.getElementById('copied-message');
 
-        // Use both touchstart and click to support iOS and other devices
+        // Initially set video to be unmuted, attempt to play with sound
+        video.muted = false;
+
         introScreen.addEventListener('touchstart', removeIntroScreen, { once: true });
         introScreen.addEventListener('click', removeIntroScreen, { once: true });
 
         function removeIntroScreen() {
             introScreen.style.display = 'none';
-            // Now that user has interacted, try playing the video
-            video.play().catch(err => {
-                console.error('Failed to play video:', err);
+
+            // Try playing unmuted
+            video.play().then(() => {
+                // Playing with sound succeeded
+            }).catch(err => {
+                console.warn('Unable to play video with sound:', err);
+                // Fallback: try muted
+                video.muted = true;
+                video.play().catch(err2 => {
+                    console.error('Even muted playback failed:', err2);
+                });
             });
         }
 
-        // Toggle mute/unmute
+        // Volume toggle
         volumeButton.addEventListener('click', (event) => {
-            event.stopPropagation(); // Prevent click from re-triggering anything
+            event.stopPropagation();
+            video.muted = !video.muted;
             if (video.muted) {
-                video.muted = false;
-                volumeIcon.classList.remove('fa-volume-mute');
-                volumeIcon.classList.add('fa-volume-up');
-            } else {
-                video.muted = true;
                 volumeIcon.classList.remove('fa-volume-up');
                 volumeIcon.classList.add('fa-volume-mute');
+            } else {
+                volumeIcon.classList.remove('fa-volume-mute');
+                volumeIcon.classList.add('fa-volume-up');
             }
         });
 
