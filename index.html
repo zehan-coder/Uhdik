@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cure</title>
     <style>
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
@@ -36,7 +36,6 @@
             justify-content: center;
             align-items: center;
             z-index: 10;
-            cursor: pointer;
         }
 
         .intro-text {
@@ -148,7 +147,7 @@
         }
 
         .volume-button i {
-            pointer-events: none;
+            pointer-events: none; /* Prevent click events on the icon itself */
         }
 
         /* Copied Animation */
@@ -177,18 +176,18 @@
 <body>
     <!-- Black Screen Intro -->
     <div class="intro-screen" id="intro-screen">
-        <div class="intro-text">Tap Anywhere to Continue</div>
+        <div class="intro-text">Click Anywhere to Continue</div>
     </div>
 
-    <!-- Video Background (no autoplay) -->
-    <video class="video-bg" id="video-bg" loop playsinline webkit-playsinline>
+    <!-- Video Background -->
+    <video class="video-bg" id="video-bg" autoplay loop muted playsinline>
         <source src="idkbro.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
 
     <!-- Mute/Unmute Button -->
     <button class="volume-button" id="volume-button">
-        <i class="fas fa-volume-up"></i>
+        <i class="fas fa-volume-mute"></i>
     </button>
 
     <!-- Profile Card -->
@@ -215,38 +214,28 @@
         const volumeIcon = volumeButton.querySelector('i');
         const copiedMessage = document.getElementById('copied-message');
 
-        // Initially set video to be unmuted, attempt to play with sound
-        video.muted = false;
-
-        introScreen.addEventListener('touchstart', removeIntroScreen, { once: true });
-        introScreen.addEventListener('click', removeIntroScreen, { once: true });
-
-        function removeIntroScreen() {
-            introScreen.style.display = 'none';
-
-            // Try playing unmuted
-            video.play().then(() => {
-                // Playing with sound succeeded
-            }).catch(err => {
-                console.warn('Unable to play video with sound:', err);
-                // Fallback: try muted
-                video.muted = true;
-                video.play().catch(err2 => {
-                    console.error('Even muted playback failed:', err2);
-                });
-            });
-        }
-
-        // Volume toggle
-        volumeButton.addEventListener('click', (event) => {
-            event.stopPropagation();
-            video.muted = !video.muted;
-            if (video.muted) {
-                volumeIcon.classList.remove('fa-volume-up');
-                volumeIcon.classList.add('fa-volume-mute');
-            } else {
+        // Hide intro screen and play video on click
+        window.addEventListener('click', () => {
+            if (introScreen.style.display !== 'none') {
+                introScreen.style.display = 'none';
+                video.muted = false;
+                video.play();
                 volumeIcon.classList.remove('fa-volume-mute');
                 volumeIcon.classList.add('fa-volume-up');
+            }
+        });
+
+        // Toggle mute/unmute
+        volumeButton.addEventListener('click', (event) => {
+            event.stopPropagation(); // Prevent click from triggering intro screen hiding
+            if (video.muted) {
+                video.muted = false;
+                volumeIcon.classList.remove('fa-volume-mute');
+                volumeIcon.classList.add('fa-volume-up');
+            } else {
+                video.muted = true;
+                volumeIcon.classList.remove('fa-volume-up');
+                volumeIcon.classList.add('fa-volume-mute');
             }
         });
 
