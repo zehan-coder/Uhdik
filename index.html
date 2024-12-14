@@ -58,13 +58,12 @@
             height: 100%;
             object-fit: cover;
             z-index: -1;
-            display: block; /* To ensure video remains invisible at the start */
         }
 
         /* Profile Card */
         .profile-card {
             width: 360px;
-            background: rgba(0, 0, 0, 0.8); /* Semi-transparent black */
+            background: rgba(0, 0, 0, 0.8);
             border-radius: 20px;
             padding: 20px;
             text-align: center;
@@ -113,69 +112,12 @@
             transition: all 0.3s ease;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
             cursor: pointer;
-            position: relative;
         }
 
         .profile-card .icons a:hover {
             transform: scale(1.1);
             background: rgba(255, 204, 0, 1);
             color: black;
-        }
-
-        /* Hover Text Animation */
-        .icon-text {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            color: white;
-            font-size: 16px;
-            padding: 5px 10px;
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 10px;
-            white-space: nowrap;
-            z-index: 10;
-        }
-
-        .icons a:hover .icon-text {
-            display: block;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateX(-50%) translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(-50%) translateY(0);
-            }
-        }
-
-        /* Mute/Unmute Button */
-        .volume-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: black;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
-            z-index: 2;
-            font-size: 20px;
-        }
-
-        .volume-button i {
-            pointer-events: none; /* Prevent click events on the icon itself */
         }
 
         /* Copied Animation */
@@ -199,6 +141,15 @@
             opacity: 1;
             transform: translate(-50%, -120px);
         }
+
+        label[for="upload-photo"] {
+            color: white;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-top: 10px;
+            display: block;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -209,30 +160,22 @@
 
     <!-- Video Background -->
     <video class="video-bg" id="video-bg" autoplay loop muted playsinline>
-        <source src="idkbro.mp4" type="video/mp4">
-        <source src="/videos/your-video.webm" type="video/webm">
+        <source src="your-video.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
 
-    <!-- Mute/Unmute Button -->
-    <button class="volume-button" id="volume-button">
-        <i class="fas fa-volume-mute"></i>
-    </button>
-
     <!-- Profile Card -->
     <div class="profile-card">
-        <img src="https://media.discordapp.net/attachments/1275105794328891405/1317126688118931476/IMG_1215.png?ex=675d8d51&is=675c3bd1&hm=08d337c29b65a417deece7604045c6fba7b7970cefc6c4c7b773de4b8be17143&" alt="Profile Picture">
+        <img id="profile-photo" src="IMG_1215.png" alt="Profile Picture">
         <h1>cure</h1>
+        <input type="file" id="upload-photo" accept="image/*" style="display: none;">
+        <label for="upload-photo">Upload Profile Photo</label>
         <div class="button-container icons">
-            <!-- Instagram Icon -->
             <a href="https://www.instagram.com/corvette2turnt" target="_blank" title="Instagram">
                 <i class="fab fa-instagram"></i>
-                <span class="icon-text">Instagram</span>
             </a>
-            <!-- Discord Icon -->
             <a href="#" onclick="copyDiscordTag()" title="Discord">
                 <i class="fab fa-discord"></i>
-                <span class="icon-text">Discord</span>
             </a>
         </div>
     </div>
@@ -243,36 +186,28 @@
     <script>
         const introScreen = document.getElementById('intro-screen');
         const video = document.getElementById('video-bg');
-        const volumeButton = document.getElementById('volume-button');
-        const volumeIcon = volumeButton.querySelector('i');
+        const profilePhoto = document.getElementById('profile-photo');
+        const uploadPhotoInput = document.getElementById('upload-photo');
         const copiedMessage = document.getElementById('copied-message');
 
-        // Start muted for autoplay
-        video.muted = true;
-        video.pause(); // Pause the video by default
-
-        // Remove intro screen and unmute video on interaction
+        // Hide intro screen and play video on click
         window.addEventListener('click', () => {
             if (introScreen.style.display !== 'none') {
-                introScreen.style.display = 'none'; // Hide intro screen
-                video.muted = false; // Unmute video
-                video.play(); // Start the video
-                volumeIcon.classList.remove('fa-volume-mute');
-                volumeIcon.classList.add('fa-volume-up');
+                introScreen.style.display = 'none';
+                video.muted = false;
+                video.play();
             }
         });
 
-        // Toggle mute/unmute
-        volumeButton.addEventListener('click', (event) => {
-            event.stopPropagation(); // Prevent interaction from triggering intro screen hiding
-            if (video.muted) {
-                video.muted = false;
-                volumeIcon.classList.remove('fa-volume-mute');
-                volumeIcon.classList.add('fa-volume-up');
-            } else {
-                video.muted = true;
-                volumeIcon.classList.remove('fa-volume-up');
-                volumeIcon.classList.add('fa-volume-mute');
+        // Handle Profile Photo Upload
+        uploadPhotoInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    profilePhoto.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
             }
         });
 
@@ -280,15 +215,11 @@
         function copyDiscordTag() {
             const discordTag = "cure0001";
             navigator.clipboard.writeText(discordTag).then(() => {
-                // Show "Copied" animation
                 copiedMessage.classList.add('show');
                 setTimeout(() => {
                     copiedMessage.classList.remove('show');
                 }, 2000);
-            }).catch((error) => {
-                alert("Failed to copy Discord tag");
-                console.error("Copy failed:", error);
-            });
+            }).catch(() => alert("Failed to copy Discord tag"));
         }
     </script>
 </body>
