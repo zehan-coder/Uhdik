@@ -7,7 +7,7 @@
     <style>
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
 
-        /* Prevent scrolling */
+        /* Prevent scrolling and gestures */
         html, body {
             margin: 0;
             padding: 0;
@@ -15,7 +15,7 @@
             height: 100%;
             overflow: hidden; /* Prevent scrollbars */
             touch-action: none; /* Prevent touch gestures */
-            overscroll-behavior: none; /* Prevent bounce effects */
+            overscroll-behavior: none; /* Prevent bounce effects on mobile */
         }
 
         body {
@@ -143,13 +143,13 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.6);
             z-index: 2;
             font-size: 20px;
         }
 
         .volume-button i {
-            pointer-events: none; /* Prevent click events on the icon itself */
+            pointer-events: none;
         }
 
         /* Copied Animation */
@@ -182,7 +182,7 @@
     </div>
 
     <!-- Video Background -->
-    <video class="video-bg" id="video-bg" muted playsinline loop>
+    <video class="video-bg" id="video-bg" playsinline muted loop>
         <source src="idkbro.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
@@ -216,50 +216,50 @@
         const volumeIcon = volumeButton.querySelector('i');
         const copiedMessage = document.getElementById('copied-message');
 
-        // Play video only after user interaction
-        const playVideo = () => {
-            video.muted = false; // Unmute video
-            video.play().catch((err) => {
-                console.log('Autoplay error: ', err);
-            });
-        };
+        // Start the video muted for autoplay compliance
+        function playVideoInitially() {
+            video.muted = true; 
+            video.play().catch(error => console.log("Initial video play attempt failed:", error));
+        }
 
-        // Hide intro screen and play video on touch or click
-        const removeIntro = () => {
+        // Remove intro screen and start video unmuted after user interaction
+        function removeIntro() {
             if (introScreen.style.display !== 'none') {
                 introScreen.style.display = 'none';
-                playVideo();
-            }
-        };
-
-        // Add event listeners for both touchstart and click
-        introScreen.addEventListener('click', removeIntro);
-        introScreen.addEventListener('touchstart', removeIntro);
-
-        // Toggle mute/unmute
-        volumeButton.addEventListener('click', (event) => {
-            event.stopPropagation(); // Prevent click from triggering intro screen hiding
-            if (video.muted) {
+                // Now that user interacted, unmute and play
                 video.muted = false;
-                volumeIcon.classList.remove('fa-volume-mute');
-                volumeIcon.classList.add('fa-volume-up');
-            } else {
-                video.muted = true;
+                video.play().catch(err => console.log("Error starting video playback:", err));
+            }
+        }
+
+        // Toggle mute/unmute on button click
+        volumeButton.addEventListener('click', (event) => {
+            event.stopPropagation(); 
+            video.muted = !video.muted;
+            if (video.muted) {
                 volumeIcon.classList.remove('fa-volume-up');
                 volumeIcon.classList.add('fa-volume-mute');
+            } else {
+                volumeIcon.classList.remove('fa-volume-mute');
+                volumeIcon.classList.add('fa-volume-up');
             }
         });
 
-        // Copy Discord Tag
+        // Copy Discord Tag to clipboard
         function copyDiscordTag() {
             const discordTag = "cure0001";
             navigator.clipboard.writeText(discordTag).then(() => {
                 copiedMessage.classList.add('show');
-                setTimeout(() => {
-                    copiedMessage.classList.remove('show');
-                }, 2000);
+                setTimeout(() => copiedMessage.classList.remove('show'), 2000);
             }).catch(() => alert("Failed to copy Discord tag"));
         }
+
+        // Add both click and touchstart events to accommodate all devices
+        introScreen.addEventListener('click', removeIntro);
+        introScreen.addEventListener('touchstart', removeIntro);
+
+        // Attempt to play the video initially (muted) for autoplay policies
+        playVideoInitially();
     </script>
 </body>
 </html>
