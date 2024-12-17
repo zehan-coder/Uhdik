@@ -180,7 +180,7 @@
     </div>
 
     <!-- Video Background -->
-    <video class="video-bg" id="video-bg" autoplay loop muted playsinline>
+    <video class="video-bg" id="video-bg" loop muted playsinline>
         <source src="idkbro.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
@@ -214,12 +214,15 @@
         const volumeIcon = volumeButton.querySelector('i');
         const copiedMessage = document.getElementById('copied-message');
 
+        // Pause the video initially
+        video.pause();
+
         // Hide intro screen and play video on click
         window.addEventListener('click', () => {
             if (introScreen.style.display !== 'none') {
                 introScreen.style.display = 'none';
                 video.muted = false;
-                video.play();
+                video.play(); // Start video playback
                 volumeIcon.classList.remove('fa-volume-mute');
                 volumeIcon.classList.add('fa-volume-up');
             }
